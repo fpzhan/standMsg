@@ -13,7 +13,10 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
 import java.io.*;
 import java.util.*;
 
-public class test {
+/**
+ * 付鹏展
+ */
+public class Test {
 
     private static String [] stopWord = new String[]{"的","其中","root"};
 
@@ -256,6 +259,9 @@ public class test {
                                 String path=rootPath+row.getCell(pathLine).getStringCellValue();
                                 if(row.getCell(attrLine)!=null && !"".equals(row.getCell(attrLine).getStringCellValue())){
                                     path+=(".@"+row.getCell(attrLine).getStringCellValue());
+                                }else{
+                                    row.getCell(attrLine).setCellValue("fixedLabelText");
+                                    path+=".fixedLabelText";
                                 }
                                 row.getCell(pathLine).setCellValue(path.replace("/","."));
                             }
