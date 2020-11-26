@@ -209,7 +209,7 @@ public class test {
 
     }
 
-    private static void dealData (String data ,Map<String,Set<String>> docMap)throws Exception{
+    private static void dealData (String data ,Map<String,Set<String>> docMap,String toPath)throws Exception{
         InputStream fis = null;
         try {
             fis = new FileInputStream(data);
@@ -274,7 +274,7 @@ public class test {
                 }
             }
 
-            FileOutputStream excelFileOutPutStream = new FileOutputStream(data);
+            FileOutputStream excelFileOutPutStream = new FileOutputStream(toPath);
             workbook.write(excelFileOutPutStream);
             excelFileOutPutStream.flush();
             excelFileOutPutStream.close();
@@ -294,9 +294,13 @@ public class test {
     }
 
     public static void main(String[] args)throws Exception {
-
-        List<String> lists = FileUtil.getList("E:\\ideaWorkspace\\testExcle\\files");
+        String topath = Path.rootPath+"\\newFile\\";
+        List<String> lists = FileUtil.getList(Path.rootPath+"\\files");
         System.out.println();
+        File file = new File(topath);
+        if(!file.exists()){
+            file.mkdir();
+        }
         for (String value :  lists) {
             List<String> datas = new ArrayList<String>();
             FileUtil.findFileList(new File(value+"\\data"),datas);
@@ -305,7 +309,7 @@ public class test {
             Map<String,Set<String>> docMap = getDocument(documents.get(0));
             System.out.println(docMap);
             for(String data:datas){
-                dealData(data,docMap);
+                dealData(data,docMap,topath+data.split("\\\\")[data.split("\\\\").length-1]);
 
             }
         }
