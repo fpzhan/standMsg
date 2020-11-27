@@ -144,26 +144,26 @@ public class CheckXml {
                         createRow.createCell(attrLine).setCellValue(pathStrs[pathStrs.length-1]);
                     }
                     createRow.createCell(pathLine).setCellValue(path);
-                    if(pathStrs.length>=3 && !columns.contains( pathStrs[pathStrs.length-2].toUpperCase())){
-                        createRow.createCell(mapLine).setCellValue( pathStrs[pathStrs.length-2].toUpperCase());
-                        columns.add( pathStrs[pathStrs.length-2].toUpperCase());
-                        String result = HttpRequest.sendGet("http://fanyi.youdao.com/translate","&doctype=text&type=EN2ZH_CN&i="+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]));
+                    if(pathStrs.length>=3 && ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]).toUpperCase().length()<30 && !columns.contains( ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]).toUpperCase()) &&  !"id".equals(pathStrs[pathStrs.length-2])){
+                        createRow.createCell(mapLine).setCellValue( ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]).toUpperCase());
+                        columns.add( ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]).toUpperCase());
+                        String result = HttpRequest.sendGet("http://fanyi.youdao.com/translate","&doctype=text&type=EN2ZH_CN&i="+ColumnUtil.camelToBlank(pathStrs[pathStrs.length-2]));
                         String desc = result.replace("errorCode=0result=","");
                         createRow.createCell(descLine).setCellValue(desc);
                         System.out.println("翻译："+createRow.getCell(mapLine).getStringCellValue()+" 中文描述："+desc);
                         Thread.currentThread().sleep(300);
-                    }else if(pathStrs.length>=4 && !columns.contains(pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase())){
-                        createRow.createCell(mapLine).setCellValue(pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase());
-                        columns.add(pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase());
-                        String result = HttpRequest.sendGet("http://fanyi.youdao.com/translate","&doctype=text&type=EN2ZH_CN&i="+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-3])+" "+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]));
+                    }else if(pathStrs.length>=4 && (ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-3]).toUpperCase()+"_"+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]).toUpperCase()).length()<30 && !columns.contains(ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-3]).toUpperCase()+"_"+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]).toUpperCase())){
+                        createRow.createCell(mapLine).setCellValue(ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-3]).toUpperCase()+"_"+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]).toUpperCase());
+                        columns.add(ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-3]).toUpperCase()+"_"+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]).toUpperCase());
+                        String result = HttpRequest.sendGet("http://fanyi.youdao.com/translate","&doctype=text&type=EN2ZH_CN&i="+ColumnUtil.camelToBlank(pathStrs[pathStrs.length-3])+" "+ColumnUtil.camelToBlank(pathStrs[pathStrs.length-2]));
                         String desc = result.replace("errorCode=0result=","");
                         createRow.createCell(descLine).setCellValue(desc);
                         System.out.println("翻译："+createRow.getCell(mapLine).getStringCellValue()+" 中文描述："+desc);
                         Thread.currentThread().sleep(300);
-                    }else if(pathStrs.length>=5 && !columns.contains(pathStrs[pathStrs.length-4].toUpperCase()+"_"+pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase())){
-                        createRow.createCell(mapLine).setCellValue(pathStrs[pathStrs.length-4].toUpperCase()+"_"+pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase());
-                        columns.add(pathStrs[pathStrs.length-4].toUpperCase()+"_"+pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase());
-                        String result = HttpRequest.sendGet("http://fanyi.youdao.com/translate","&doctype=text&type=EN2ZH_CN&i="+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-4])+" "+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-3])+" "+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]));
+                    }else if(pathStrs.length>=5 && !columns.contains(ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-4]).toUpperCase()+"_"+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-3]).toUpperCase()+"_"+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]).toUpperCase()) && (ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-4]).toUpperCase()+"_"+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-3]).toUpperCase()+"_"+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]).toUpperCase()).length()<30){
+                        createRow.createCell(mapLine).setCellValue(ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-4]).toUpperCase()+"_"+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-3]).toUpperCase()+"_"+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]).toUpperCase());
+                        columns.add(ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-4]).toUpperCase()+"_"+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-3]).toUpperCase()+"_"+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]).toUpperCase());
+                        String result = HttpRequest.sendGet("http://fanyi.youdao.com/translate","&doctype=text&type=EN2ZH_CN&i="+ColumnUtil.camelToBlank(pathStrs[pathStrs.length-4])+" "+ColumnUtil.camelToBlank(pathStrs[pathStrs.length-3])+" "+ColumnUtil.camelToBlank(pathStrs[pathStrs.length-2]));
                         String desc = result.replace("errorCode=0result=","");
                         createRow.createCell(descLine).setCellValue(desc);
                         System.out.println("翻译："+createRow.getCell(mapLine).getStringCellValue()+" 中文描述："+desc);
