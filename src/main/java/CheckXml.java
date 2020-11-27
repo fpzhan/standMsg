@@ -1,8 +1,6 @@
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -62,16 +60,24 @@ public class CheckXml {
         List<String> paths = new ArrayList<String>();
         checkXml(root,paths,"");
 
+
+
         Map<String,Set<String>> map = new HashMap<String, Set<String>>();
         InputStream fis = null;
         try {
             fis = new FileInputStream(excel);
             Workbook workbook = null;
+
             if (excel.endsWith(".xlsx")) {
                 workbook = new XSSFWorkbook(fis);
             } else if (excel.endsWith(".xls") || excel.endsWith(".et")) {
                 workbook = new HSSFWorkbook(fis);
             }
+            CellStyle cstyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setColor(Font.COLOR_RED);//字体颜色
+            font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+            cstyle .setFont(font);
             fis.close();
             int k = workbook.getNumberOfSheets();
             for (int i = 0; i < k; i++) {
@@ -100,7 +106,7 @@ public class CheckXml {
                                 if(paths.contains(path)){
                                    paths.remove(path);
                                 }else{
-                                    row.getCell(pathLine).setCellValue("");
+                                    row.getCell(pathLine).setCellStyle(cstyle);
                                 }
                             }
                         }
