@@ -76,10 +76,11 @@ public class CheckXml {
             CellStyle cstyle = workbook.createCellStyle();
             Font font = workbook.createFont();
             font.setColor(Font.COLOR_RED);//字体颜色
-            font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+//            font.setBoldweight(Font.BOLDWEIGHT_BOLD);
             cstyle .setFont(font);
             fis.close();
             int k = workbook.getNumberOfSheets();
+            Set<String> columns = new HashSet<String>();
             for (int i = 0; i < k; i++) {
                 /* 读EXCEL文字内容 */
                 // 获取第一个sheet表，也可使用sheet表名获取
@@ -88,6 +89,9 @@ public class CheckXml {
                 int rowLines = sheet.getLastRowNum();
                 int pathLine =0;
                 int valueLine=0 ;
+                int attrLine=0;
+                int mapLine=0;
+                int versionLine = 0;
                 for(int line=0 ; line<=rowLines;line++) {
                     Row row = sheet.getRow(line);
                     if(row!=null){
@@ -98,6 +102,16 @@ public class CheckXml {
                                 if (cell != null && "元素路径".equals(cell.getStringCellValue())) {
                                     pathLine = cellLine;
                                 }
+                                if (cell != null && "属性".equals(cell.getStringCellValue())) {
+                                    attrLine = cellLine;
+                                }
+                                if (cell != null && cell.getStringCellValue().contains("字段")) {
+                                    mapLine = cellLine;
+                                }
+                                if (cell != null && "业务约束".equals(cell.getStringCellValue())) {
+                                    versionLine = cellLine;
+                                }
+
                             }
                         } else {
                             if (row.getCell(pathLine) != null && !"".equals(row.getCell(pathLine).getStringCellValue())) {
@@ -105,6 +119,7 @@ public class CheckXml {
                                 row.getCell(pathLine).setCellValue(path);
                                 if(paths.contains(path)){
                                    paths.remove(path);
+                                    columns.add(row.getCell(mapLine).getStringCellValue().toUpperCase());
                                 }else{
                                     row.getCell(pathLine).setCellStyle(cstyle);
                                 }
@@ -116,7 +131,26 @@ public class CheckXml {
 
                 for(String path : paths){
                     valueLine++;
-                    sheet.createRow(valueLine).createCell(0).setCellValue(path);
+                    Row createRow = sheet.createRow(valueLine);
+                    String [] pathStrs = path.split("\\.");
+                    if(pathStrs[pathStrs.length-1].contains("@")){
+                        createRow.createCell(attrLine).setCellValue(pathStrs[pathStrs.length-1].replace("@",""));
+
+                    }else{
+                        createRow.createCell(attrLine).setCellValue(pathStrs[pathStrs.length-1]);
+                    }
+                    createRow.createCell(pathLine).setCellValue(path);
+                    if(pathStrs.length>=3 && !columns.contains( pathStrs[pathStrs.length-2].toUpperCase())){
+                        createRow.createCell(mapLine).setCellValue( pathStrs[pathStrs.length-2].toUpperCase());
+                        columns.add( pathStrs[pathStrs.length-2].toUpperCase());
+                    }else if(pathStrs.length>=4 && !columns.contains(pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase())){
+                        createRow.createCell(mapLine).setCellValue(pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase());
+                        columns.add(pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase());
+                    }else if(pathStrs.length>=5 && !columns.contains(pathStrs[pathStrs.length-4].toUpperCase()+"_"+pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase())){
+                        createRow.createCell(mapLine).setCellValue(pathStrs[pathStrs.length-4].toUpperCase()+"_"+pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase());
+                        columns.add(pathStrs[pathStrs.length-4].toUpperCase()+"_"+pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase());
+                    }
+                    createRow.createCell(versionLine).setCellValue("1.1");
                 }
             }
 
