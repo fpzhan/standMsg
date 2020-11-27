@@ -202,7 +202,6 @@ public class Test {
             for (Map.Entry<String,Set<String>> entry : docMap.entrySet()){
                 double iz = getSimilarity(new ArrayList<String>(entry.getValue()),list);
                 columns.put(iz,entry.getKey());
-                System.out.println(iz +"---"+entry.getKey()+"---"+entry.getValue());
             }
             Double max = Collections.max(columns.keySet());
             System.out.println("相似值："+max+"相似者："+docMap.get(columns.get(max))+"---"+list);
@@ -313,7 +312,6 @@ public class Test {
             List<String> documents = new ArrayList<String>();
             FileUtil.findFileList(new File(value+"\\document"),documents);
             Map<String,Set<String>> docMap = getDocument(documents.get(0));
-            System.out.println(docMap);
             for(String data:datas){
                 dealData(data,docMap,topath+data.split("\\\\")[data.split("\\\\").length-1]);
 
