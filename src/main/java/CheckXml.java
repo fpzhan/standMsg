@@ -92,6 +92,7 @@ public class CheckXml {
                 int attrLine=0;
                 int mapLine=0;
                 int versionLine = 0;
+                int descLine = 0;
                 for(int line=0 ; line<=rowLines;line++) {
                     Row row = sheet.getRow(line);
                     if(row!=null){
@@ -112,6 +113,9 @@ public class CheckXml {
                                     versionLine = cellLine;
                                 }
 
+                                if (cell != null && (cell.getStringCellValue().contains("描述") || cell.getStringCellValue().contains("说明"))) {
+                                    descLine = cellLine;
+                                }
                             }
                         } else {
                             if (row.getCell(pathLine) != null && !"".equals(row.getCell(pathLine).getStringCellValue())) {
@@ -143,12 +147,27 @@ public class CheckXml {
                     if(pathStrs.length>=3 && !columns.contains( pathStrs[pathStrs.length-2].toUpperCase())){
                         createRow.createCell(mapLine).setCellValue( pathStrs[pathStrs.length-2].toUpperCase());
                         columns.add( pathStrs[pathStrs.length-2].toUpperCase());
+                        String result = HttpRequest.sendGet("http://fanyi.youdao.com/translate","&doctype=text&type=EN2ZH_CN&i="+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]));
+                        String desc = result.replace("errorCode=0result=","");
+                        createRow.createCell(descLine).setCellValue(desc);
+                        System.out.println("翻译："+createRow.getCell(mapLine).getStringCellValue()+" 中文描述："+desc);
+                        Thread.currentThread().sleep(300);
                     }else if(pathStrs.length>=4 && !columns.contains(pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase())){
                         createRow.createCell(mapLine).setCellValue(pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase());
                         columns.add(pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase());
+                        String result = HttpRequest.sendGet("http://fanyi.youdao.com/translate","&doctype=text&type=EN2ZH_CN&i="+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-3])+" "+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]));
+                        String desc = result.replace("errorCode=0result=","");
+                        createRow.createCell(descLine).setCellValue(desc);
+                        System.out.println("翻译："+createRow.getCell(mapLine).getStringCellValue()+" 中文描述："+desc);
+                        Thread.currentThread().sleep(300);
                     }else if(pathStrs.length>=5 && !columns.contains(pathStrs[pathStrs.length-4].toUpperCase()+"_"+pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase())){
                         createRow.createCell(mapLine).setCellValue(pathStrs[pathStrs.length-4].toUpperCase()+"_"+pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase());
                         columns.add(pathStrs[pathStrs.length-4].toUpperCase()+"_"+pathStrs[pathStrs.length-3].toUpperCase()+"_"+pathStrs[pathStrs.length-2].toUpperCase());
+                        String result = HttpRequest.sendGet("http://fanyi.youdao.com/translate","&doctype=text&type=EN2ZH_CN&i="+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-4])+" "+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-3])+" "+ColumnUtil.camelToUnderline(pathStrs[pathStrs.length-2]));
+                        String desc = result.replace("errorCode=0result=","");
+                        createRow.createCell(descLine).setCellValue(desc);
+                        System.out.println("翻译："+createRow.getCell(mapLine).getStringCellValue()+" 中文描述："+desc);
+                        Thread.currentThread().sleep(300);
                     }
                     createRow.createCell(versionLine).setCellValue("1.1");
                 }
